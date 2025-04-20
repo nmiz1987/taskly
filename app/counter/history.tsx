@@ -5,7 +5,7 @@ import { getFromStorage } from '../../utils/storage';
 import { format } from 'date-fns';
 import { theme } from '../../theme';
 
-const fullDateFormat = `LLL d yyyy, h:mm aaa`;
+const fullDateFormat = `LLL d yyyy, h:mm:ss aaa`;
 
 export default function HistoryScreen() {
   const [countdownState, setCountdownState] = useState<PersistedCountdownState>();

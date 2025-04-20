@@ -40,10 +40,9 @@ export default function CounterScreen() {
     init();
   }, []);
 
-  const lastCompletedAt = countdownState?.completedAtTimestamps[0];
-
   useEffect(() => {
     const intervalId = setInterval(() => {
+      const lastCompletedAt = countdownState?.completedAtTimestamps[0];
       const timestamp = lastCompletedAt ? lastCompletedAt + frequency : Date.now();
       const isOverdue = isBefore(timestamp, Date.now());
 
@@ -55,7 +54,7 @@ export default function CounterScreen() {
     return () => {
       clearInterval(intervalId);
     };
-  }, [lastCompletedAt]);
+  }, [countdownState?.completedAtTimestamps]);
 
   const scheduleNotification = async () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
