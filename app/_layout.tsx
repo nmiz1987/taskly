@@ -3,7 +3,6 @@ import * as NavigationBar from 'expo-navigation-bar';
 import { useEffect } from 'react';
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { theme } from '../theme';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
@@ -31,10 +30,6 @@ export default function Layout() {
             title: 'Counter',
             tabBarIcon: ({ color, size }) => <AntDesign name="clockcircleo" size={size} color={color} />,
           }}
-        />
-        <Tabs.Screen
-          name="idea"
-          options={{ title: 'My idea', tabBarIcon: ({ color, size }) => <FontAwesome5 name="lightbulb" size={size} color={color} /> }}
         />
       </Tabs>
     </>
