@@ -6,7 +6,7 @@ import { useState } from 'react';
 type ShoppingListItemType = {
   id: string;
   name: string;
-  isCompleted: boolean;
+  completedAtTimestamp?: number;
 };
 
 export default function App() {
@@ -19,8 +19,18 @@ export default function App() {
     setValue('');
   };
 
-  const removeItemHandler = (id: string) => {
+  const deleteHandler = (id: string) => {
     setShoppingList(prev => prev.filter(item => item.id !== id));
+  };
+
+  const toggleCompletedHandler = (id: string) => {
+    const newShoppingList = shoppingList.map(item => {
+      if (item.id === id) {
+        return { ...item, completedAtTimestamp: item.completedAtTimestamp ? undefined : Date.now() };
+      }
+      return item;
+    });
+    setShoppingList(newShoppingList);
   };
 
   return (
@@ -34,7 +44,13 @@ export default function App() {
       )}
       contentContainerStyle={styles.contentContainer}
       renderItem={({ item }) => (
-        <ShoppingListItem id={item.id} name={item.name} key={item.id} isCompleted={item.isCompleted} removeItem={removeItemHandler} />
+        <ShoppingListItem
+          onToggleCompleted={() => toggleCompletedHandler(item.id)}
+          name={item.name}
+          key={item.id}
+          isCompleted={!!item.completedAtTimestamp}
+          onDelete={() => deleteHandler(item.id)}
+        />
       )}
       ListHeaderComponent={
         <TextInput
