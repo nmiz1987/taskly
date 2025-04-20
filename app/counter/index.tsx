@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity, Alert, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Alert, Dimensions, ActivityIndicator } from 'react-native';
 import { theme } from '../../theme';
 import { registerForPushNotificationsAsync } from '../../utils/registerForPushNotificationsAsync';
 import * as Notifications from 'expo-notifications';
@@ -25,6 +25,7 @@ type CountdownStatus = {
 };
 
 export default function CounterScreen() {
+  const [isLoading, setIsLoading] = useState(true);
   const confettiRef = useRef<any>();
   const [countdownState, setCountdownState] = useState<PersistedCountdownState>();
   const [status, setStatus] = useState<CountdownStatus>({
@@ -44,6 +45,9 @@ export default function CounterScreen() {
     const intervalId = setInterval(() => {
       const lastCompletedAt = countdownState?.completedAtTimestamps[0];
       const timestamp = lastCompletedAt ? lastCompletedAt + frequency : Date.now();
+      if (lastCompletedAt) {
+        setIsLoading(false);
+      }
       const isOverdue = isBefore(timestamp, Date.now());
 
       const distance = intervalToDuration(isOverdue ? { end: Date.now(), start: timestamp } : { start: Date.now(), end: timestamp });
@@ -88,6 +92,14 @@ export default function CounterScreen() {
 
     await saveToStorage(countdownStorageKey, newCountdownState);
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.activityIndicatorContainer}>
+        <ActivityIndicator color="rgb(94, 148, 250)" size="large" />
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, status.isOverdue ? styles.containerLate : undefined]}>
@@ -143,5 +155,11 @@ const styles = StyleSheet.create({
   },
   whiteText: {
     color: theme.colorWhite,
+  },
+  activityIndicatorContainer: {
+    backgroundColor: theme.colorWhite,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
 });
