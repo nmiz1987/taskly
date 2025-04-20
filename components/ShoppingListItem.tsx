@@ -1,7 +1,8 @@
-import { TouchableOpacity, View, Alert, StyleSheet, Text, Pressable } from 'react-native';
+import { TouchableOpacity, View, Alert, StyleSheet, Text, Pressable, Platform } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import { theme } from '../theme';
+import * as Haptics from 'expo-haptics';
 
 type Props = {
   name: string;
@@ -12,21 +13,30 @@ type Props = {
 
 export function ShoppingListItem({ name, isCompleted, onDelete, onToggleCompleted }: Props) {
   const handleDelete = () => {
-    Alert.alert(`Are you sure you want to delete ${name}?`, 'It will be gone for good', [
-      {
-        text: 'Yes',
-        onPress: () => onDelete(),
-        style: 'destructive',
-      },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (Platform.OS === 'web') {
+      if (confirm(`Are you sure you want to delete ${name}?`)) {
+        onDelete();
+      }
+    } else {
+      Alert.alert(`Are you sure you want to delete ${name}?`, 'It will be gone for good', [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Yes',
+          onPress: () => onDelete(),
+          style: 'destructive',
+        },
+      ]);
+    }
   };
 
   return (
     <Pressable onPress={onToggleCompleted} style={[styles.itemContainer, isCompleted ? styles.completedContainer : undefined]}>
       <View style={styles.row}>
         <Entypo name={isCompleted ? 'check' : 'circle'} size={24} color={isCompleted ? theme.colorGrey : theme.colorCerulean} />
-        <Text style={[styles.itemText, isCompleted ? styles.completedText : undefined]}>{name}</Text>
+        <Text numberOfLines={1} style={[styles.itemText, isCompleted ? styles.completedText : undefined]}>
+          {name}
+        </Text>
       </View>
       <TouchableOpacity hitSlop={20} onPress={handleDelete}>
         <AntDesign name="closecircle" size={24} color={isCompleted ? theme.colorGrey : theme.colorRed} />
@@ -44,6 +54,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: 12,
   },
   itemText: {
     fontSize: 18,
