@@ -5,11 +5,14 @@ import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { theme } from '../theme';
+import { Platform } from 'react-native';
 
 export default function Layout() {
   useEffect(() => {
-    NavigationBar.setBackgroundColorAsync('white');
-    NavigationBar.setButtonStyleAsync('dark');
+    if (Platform.OS === 'android') {
+      NavigationBar.setBackgroundColorAsync('white');
+      NavigationBar.setButtonStyleAsync('dark');
+    }
   }, []);
 
   return (

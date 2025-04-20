@@ -4,16 +4,18 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { theme } from '../theme';
 
 type Props = {
+  id: string;
   name: string;
   isCompleted?: boolean;
+  removeItem: (id: string) => void;
 };
 
-export function ShoppingListItem({ name, isCompleted }: Props) {
-  const handleDelete = () => {
+export function ShoppingListItem({ id, name, isCompleted, removeItem }: Props) {
+  const handleDelete = (id: string) => {
     Alert.alert(`Are you sure you want to delete ${name}?`, 'It will be gone for good', [
       {
         text: 'Yes',
-        onPress: () => console.log('Ok, deleting.'),
+        onPress: () => removeItem(id),
         style: 'destructive',
       },
       { text: 'Cancel', style: 'cancel' },
@@ -26,7 +28,7 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
         <Entypo name={isCompleted ? 'check' : 'circle'} size={24} color={isCompleted ? theme.colorGrey : theme.colorCerulean} />
         <Text style={[styles.itemText, isCompleted ? styles.completedText : undefined]}>{name}</Text>
       </View>
-      <TouchableOpacity hitSlop={20} onPress={handleDelete}>
+      <TouchableOpacity hitSlop={20} onPress={() => handleDelete(id)}>
         <AntDesign name="closecircle" size={24} color={isCompleted ? theme.colorGrey : theme.colorRed} />
       </TouchableOpacity>
     </View>
